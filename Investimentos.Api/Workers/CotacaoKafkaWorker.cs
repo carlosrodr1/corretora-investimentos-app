@@ -95,10 +95,7 @@ public class CotacaoKafkaWorker : IHostedService
 
                     await contexto.SaveChangesAsync(stoppingToken);
                 }
-                else
-                {
-                    Console.WriteLine($"Cotação duplicada ignorada: {ativo.Codigo} - {cotacaoDto.DataHora}");
-                }
+                
             }
             catch (ConsumeException ex)
             {
