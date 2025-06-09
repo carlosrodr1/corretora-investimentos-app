@@ -145,7 +145,7 @@ WHERE usuario_id = @usuarioId
 
 ## 🧠 Testes Mutantes (explicação)
 
-> Testes mutantes validam a eficácia dos testes, modificando ligeiramente o código para ver se os testes ainda detectam erros.
+> Testes mutantes validam a eficácia dos testes, modificando o código para ver se os testes ainda detectam erros.
 
 Exemplo:  
 Se trocarmos um `+` por `-` no cálculo do preço médio, os testes devem falhar.
