@@ -41,43 +41,76 @@
         </table>
     </div>
 
-    <div id="paginacao" class="flex justify-center mt-6 gap-2"></div>
+    <div id="paginacao" class="flex justify-center mt-6 gap-2 flex-wrap"></div>
 </div>
 
 @section Scripts {
-<script>
-    const linhasPorPagina = 10;
-    const tbody = document.getElementById("ativos-tbody");
-    const todasAsLinhas = Array.from(tbody.querySelectorAll("tr"));
-    const totalPaginas = Math.ceil(todasAsLinhas.length / linhasPorPagina);
-    const paginacao = document.getElementById("paginacao");
+    <script>
+        const linhasPorPagina = 10;
+        const tbody = document.getElementById("ativos-tbody");
+        const todasAsLinhas = Array.from(tbody.querySelectorAll("tr"));
+        const totalPaginas = Math.ceil(todasAsLinhas.length / linhasPorPagina);
+        const paginacao = document.getElementById("paginacao");
 
-    function mostrarPagina(pagina) {
-        const inicio = (pagina - 1) * linhasPorPagina;
-        const fim = inicio + linhasPorPagina;
+        function mostrarPagina(pagina) {
+            const inicio = (pagina - 1) * linhasPorPagina;
+            const fim = inicio + linhasPorPagina;
 
-        todasAsLinhas.forEach((linha, i) => {
-            linha.style.display = (i >= inicio && i < fim) ? "" : "none";
-        });
+            todasAsLinhas.forEach((linha, i) => {
+                linha.style.display = (i >= inicio && i < fim) ? "" : "none";
+            });
 
-        atualizarBotoes(pagina);
-    }
-
-    function atualizarBotoes(paginaAtual) {
-        paginacao.innerHTML = "";
-
-        for (let i = 1; i <= totalPaginas; i++) {
-            const btn = document.createElement("button");
-            btn.textContent = i;
-            btn.className = `px-4 py-2 rounded-xl text-sm font-medium ${
-                i === paginaAtual ? "bg-indigo-600 text-white" : "bg-white/10 text-indigo-200 hover:bg-white/20"
-            }`;
-            btn.onclick = () => mostrarPagina(i);
-            paginacao.appendChild(btn);
+            atualizarBotoes(pagina);
         }
-    }
 
-    if (todasAsLinhas.length > 0)
-        mostrarPagina(1);
-</script>
+        function criarBotao(pagina, texto = null, ativo = false, disabled = false) {
+            const btn = document.createElement("button");
+            btn.textContent = texto || pagina;
+            btn.className = `px-3 py-1 rounded-lg text-sm font-medium ${
+                ativo ? "bg-indigo-600 text-white" : "bg-white/10 text-indigo-200 hover:bg-white/20"
+            }`;
+            if (!disabled) btn.onclick = () => mostrarPagina(pagina);
+            else btn.classList.add("cursor-default", "opacity-50");
+            return btn;
+        }
+
+        function atualizarBotoes(paginaAtual) {
+            paginacao.innerHTML = "";
+
+            const delta = 2;
+            let start = Math.max(2, paginaAtual - delta);
+            let end = Math.min(totalPaginas - 1, paginaAtual + delta);
+
+            if (paginaAtual <= 3) {
+                start = 2;
+                end = Math.min(5, totalPaginas - 1);
+            }
+
+            if (paginaAtual >= totalPaginas - 2) {
+                start = Math.max(totalPaginas - 4, 2);
+                end = totalPaginas - 1;
+            }
+
+            const range = [];
+
+            range.push(1);
+            if (start > 2) range.push("...");
+
+            for (let i = start; i <= end; i++) range.push(i);
+
+            if (end < totalPaginas - 1) range.push("...");
+            if (totalPaginas > 1) range.push(totalPaginas);
+
+            range.forEach(p => {
+                if (p === "...") {
+                    paginacao.appendChild(criarBotao(0, "...", false, true));
+                } else {
+                    paginacao.appendChild(criarBotao(p, null, p === paginaAtual));
+                }
+            });
+        }
+
+        if (todasAsLinhas.length > 0)
+            mostrarPagina(1);
+    </script>
 }

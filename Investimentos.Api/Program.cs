@@ -8,6 +8,8 @@ using Investimentos.Api.Repositories.Resiliente;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Logging.AddFilter("Microsoft.EntityFrameworkCore.Database.Command", LogLevel.Warning);
+
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseMySql(
         builder.Configuration.GetConnectionString("DefaultConnection"),
