@@ -45,7 +45,7 @@ chmod +x wait-for-it.sh
 
 # Sobe os containers
 docker-compose up --build
-
+```
 
 ### Serviços disponíveis:
 
