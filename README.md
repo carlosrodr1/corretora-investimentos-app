@@ -125,12 +125,6 @@ WHERE usuario_id = @usuarioId
 
 ---
 
-## ✅ Exemplos de API REST
-
-- `GET /api/cotacoes/ultimo?ativo=ITSA4` → Última cotação
-- `GET /api/posicoes/usuario/1` → Posição completa de um cliente
-- `GET /api/usuarios/top-corretagem` → Top 10 clientes por corretagem
-
 ### OpenAPI disponível em:
 📄 [http://localhost:5030/swagger](http://localhost:5030/swagger)
 
