@@ -33,7 +33,7 @@ Investimentos em renda variável não têm retorno previsível e dependem da osc
 ### Pré-requisitos
 - Docker + Docker Compose
 
-### Comando único para subir tudo:
+### Comandos únicos para subir tudo:
 
 ```bash
 git clone https://github.com/carlosrodr1/corretora-investimentos-app.git
