@@ -1,11 +1,11 @@
 
-# 💹 Corretora de Investimentos - Renda Variável
+# Corretora de Investimentos - Renda Variável
 
 Este projeto simula uma plataforma de controle de investimentos em renda variável, desenvolvida como parte de um teste técnico. A aplicação permite cadastro de usuários, registro de operações de compra e venda de ativos, cálculo de posições, P&L (lucro/prejuízo), consumo de cotações em tempo real via Kafka, e exposição de APIs RESTful com dados consolidados.
 
 ---
 
-## 📘 Contexto
+## Contexto
 
 Investimentos em renda variável não têm retorno previsível e dependem da oscilação do mercado. Este sistema foi modelado para lidar com:
 
@@ -17,7 +17,7 @@ Investimentos em renda variável não têm retorno previsível e dependem da osc
 
 ---
 
-## 🧱 Estrutura da Solução
+## Estrutura da Solução
 
 | Projeto                 | Função                                                       |
 |-------------------------|--------------------------------------------------------------|
@@ -28,7 +28,7 @@ Investimentos em renda variável não têm retorno previsível e dependem da osc
 
 ---
 
-## 📦 Executar com Docker
+## Executar com Docker
 
 ### Pré-requisitos
 - Docker + Docker Compose
@@ -59,7 +59,7 @@ docker-compose up --build
 
 ---
 
-## 🗃️ Modelagem de Dados (MySQL)
+## Modelagem de Dados (MySQL)
 
 ```sql
 CREATE TABLE usuario (
@@ -107,7 +107,7 @@ CREATE TABLE posicao (
 
 ---
 
-## 📊 Consultas Otimizadas
+## Consultas Otimizadas
 
 ```sql
 -- Índice sugerido
@@ -123,7 +123,7 @@ WHERE usuario_id = @usuarioId
 
 ---
 
-## 📈 Lógica de Negócio
+## Lógica de Negócio
 
 - Cálculo de **preço médio ponderado**
 - Atualização automática da **posição e P&L** com base em novas cotações Kafka
@@ -132,18 +132,18 @@ WHERE usuario_id = @usuarioId
 ---
 
 ### OpenAPI disponível em:
-📄 [http://localhost:5030/swagger](http://localhost:5030/swagger)
+ [http://localhost:5030/swagger](http://localhost:5030/swagger)
 
 ---
 
-## 🧪 Testes
+## Testes
 
 - ✅ Testes de unidade com xUnit para lógica de cálculo de preço médio
 - ✅ Cobertura para cenários inválidos (quantidade zero, lista vazia)
 
 ---
 
-## 🧠 Testes Mutantes (explicação)
+## Testes Mutantes (explicação)
 
 > Testes mutantes validam a eficácia dos testes, modificando o código para ver se os testes ainda detectam erros.
 
@@ -152,21 +152,21 @@ Se trocarmos um `+` por `-` no cálculo do preço médio, os testes devem falhar
 
 ---
 
-## 🔁 Kafka + Worker
+## Kafka + Worker
 
 - Novo microserviço publica cotações em `cotacoes`
 - Worker `.NET` consome e atualiza as posições com `retry` e `idempotência`
 
 ---
 
-## ⚙️ Resiliência e Observabilidade
+## ⚙Resiliência e Observabilidade
 
 - Circuit breaker com fallback (ex: cotação indisponível → usa última conhecida)
 - `try/catch` com logs e tratamento adequado em todas as camadas
 
 ---
 
-## 📈 Escalabilidade
+## Escalabilidade
 
 - Suporte a **auto-scaling horizontal**
 - Estratégia de **round-robin** ou por **latência** para balanceamento de carga
