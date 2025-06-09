@@ -45,7 +45,9 @@
                         <td class="py-2 px-4 text-right">@p.Quantidade</td>
                         <td class="py-2 px-4 text-right">R$ @p.PrecoMedio.ToString("N2")</td>
                         <td class="py-2 px-4 text-right @(p.PL >= 0 ? "text-green-400" : "text-red-400")">R$ @p.PL.ToString("N2")</td>
-                        <td class="py-2 px-4 text-right">@((p.UltimaCotacao.HasValue) ? $"R$ {p.UltimaCotacao.Value.ToString("N2")}" : "-")</td>
+                        <td class="py-2 px-4 text-right">
+                            @(p.UltimaCotacao.HasValue ? p.UltimaCotacao.Value.ToString("dd/MM/yyyy HH:mm") : "-")
+                        </td>
                     </tr>
                 }
                 @if (!Model.Posicoes.Any())

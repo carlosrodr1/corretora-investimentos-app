@@ -39,5 +39,11 @@ namespace Investimentos.Web.Services
             var response = await _client.PostAsJsonAsync("/api/usuarios/registrar", model);
             return response.IsSuccessStatusCode;
         }
+
+        public async Task<UsuarioDetalheViewModel?> GetDetalhesAsync(int id)
+        {
+            return await _client.GetFromJsonAsync<UsuarioDetalheViewModel>($"/api/usuarios/detalhes/{id}");
+        }
+
     }
 }

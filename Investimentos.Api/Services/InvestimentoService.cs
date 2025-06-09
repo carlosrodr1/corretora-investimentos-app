@@ -43,7 +43,7 @@ namespace Investimentos.Api.Services
                 if (quantidadeFinal <= 0)
                     continue;
 
-                var totalInvestido = compras.Sum(x => x.Quantidade * x.PrecoUnitario);
+                var totalInvestido = compras.Sum(x => (x.Quantidade * x.PrecoUnitario) + x.Corretagem);
                 var precoMedio = CalculadoraPrecoMedio.Calcular(compras);
 
                 var cotacao = await _cotacaoRepo.GetUltimaCotacaoAsync(grupo.Key);
@@ -54,9 +54,11 @@ namespace Investimentos.Api.Services
                 resultado.Add(new PosicaoViewModel
                 {
                     CodigoAtivo = ativo.Codigo,
+                    AtivoNome = ativo.Nome,
                     Quantidade = quantidadeFinal,
                     PrecoMedio = Math.Round(precoMedio, 2),
                     CotacaoAtual = cotacaoAtual,
+                    UltimaCotacao = cotacao?.DataHora,
                     PL = Math.Round(pl, 2)
                 });
             }

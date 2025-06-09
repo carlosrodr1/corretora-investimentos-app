@@ -26,21 +26,12 @@ namespace Investimentos.Web.Controllers
             if (usuarioId == null)
                 return RedirectToAction("Login", "Auth");
 
-            var usuario = await _usuarioService.GetUsuarioAsync(usuarioId.Value);
-            if (usuario == null)
+            var vm = await _usuarioService.GetDetalhesAsync(usuarioId.Value);
+            if (vm == null)
                 return NotFound();
-
-            var vm = new UsuarioDetalheViewModel
-            {
-                Id = usuario.Id,
-                Nome = usuario.Nome,
-                Email = usuario.Email,
-                CorretagemPercentual = usuario.CorretagemPercentual,
-            };
 
             return View(vm);
         }
-
 
 
     }

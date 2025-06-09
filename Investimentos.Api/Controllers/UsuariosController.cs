@@ -1,5 +1,6 @@
 ﻿using Investimentos.Api.Models;
 using Investimentos.Api.Repositories.Interfaces;
+using Investimentos.Api.Services.Interfaces;
 using Investimentos.Api.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 
@@ -10,13 +11,21 @@ namespace Investimentos.Api.Controllers
     public class UsuariosController : ControllerBase
     {
         private readonly IUsuarioRepository _usuarioRepository;
+        private readonly IOperacaoRepository _operacaoRepository;
+        private readonly IInvestimentoService _investimentoService;
 
-        public UsuariosController(IUsuarioRepository usuarioRepository)
+        public UsuariosController(
+            IUsuarioRepository usuarioRepository,
+            IOperacaoRepository operacaoRepository,
+            IInvestimentoService investimentoService)
         {
             _usuarioRepository = usuarioRepository;
+            _operacaoRepository = operacaoRepository;
+            _investimentoService = investimentoService;
         }
 
-        
+
+
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
@@ -70,5 +79,45 @@ namespace Investimentos.Api.Controllers
             var total = await _usuarioRepository.GetTotalCorretagemAsync(usuarioId);
             return Ok(new { total_corretagem = Math.Round(total, 2) });
         }
+
+        [HttpGet("detalhes/{usuarioId:int}")]
+        public async Task<IActionResult> GetDetalhes(int usuarioId)
+        {
+            var usuario = await _usuarioRepository.GetByIdAsync(usuarioId);
+            if (usuario == null)
+                return NotFound();
+
+            var operacoes = await _operacaoRepository.GetOperacoesPorUsuarioAsync(usuarioId);
+            var posicoes = await _investimentoService.CalcularPosicoesAsync(usuarioId);
+            var totalInvestido = await _investimentoService.CalcularTotalInvestidoAsync(usuarioId);
+            var pl = await _investimentoService.CalcularTotalPLAsync(usuarioId);
+            var totalCorretagem = await _usuarioRepository.GetTotalCorretagemAsync(usuarioId);
+
+            var viewModel = new UsuarioDetalheViewModel
+            {
+                Id = usuario.Id,
+                Nome = usuario.Nome,
+                Email = usuario.Email,
+                CorretagemPercentual = usuario.CorretagemPercentual,
+                TotalInvestido = totalInvestido,
+                TotalCorretagem = totalCorretagem,
+                PL = pl,
+                Posicoes = posicoes,
+                Operacoes = operacoes.Select(o => new OperacaoViewModel
+                {
+                    Id = o.Id,
+                    UsuarioId = o.UsuarioId,
+                    AtivoCodigo = o.Ativo.Codigo,
+                    TipoOperacao = o.TipoOperacao,
+                    Quantidade = o.Quantidade,
+                    PrecoUnitario = o.PrecoUnitario,
+                    Corretagem = o.Corretagem,
+                    DataHora = o.DataHora
+                }).ToList()
+            };
+
+            return Ok(viewModel);
+        }
+
     }
 }

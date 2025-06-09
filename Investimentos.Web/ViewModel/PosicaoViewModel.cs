@@ -7,7 +7,7 @@
         public int Quantidade { get; set; }
         public decimal PrecoMedio { get; set; }
         public decimal PL { get; set; }
-        public decimal? UltimaCotacao { get; set; }
+        public DateTime? UltimaCotacao { get; set; }
     }
 
 }

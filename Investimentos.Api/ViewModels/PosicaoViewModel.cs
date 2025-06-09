@@ -7,5 +7,8 @@
         public decimal PrecoMedio { get; set; }
         public decimal CotacaoAtual { get; set; }
         public decimal PL { get; set; }
+        public string AtivoNome { get; set; } = string.Empty;
+        public DateTime? UltimaCotacao { get; set; }
+
     }
 }

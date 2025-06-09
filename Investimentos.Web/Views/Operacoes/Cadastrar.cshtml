@@ -87,12 +87,12 @@
             }
 
             try {
-                const resp = await fetch(`/api/cotacoes/ultima/${ativoId}`);
+                const resp = await fetch(`http://localhost:5030/api/cotacoes/ultima/${ativoId}`);
                 if (!resp.ok) throw new Error("Cotação não encontrada.");
 
                 const cotacao = await resp.json();
-                document.getElementById("precoUnitario").value = cotacao.preco;
-            } catch (err) {
+        document.getElementById("precoUnitario").value = cotacao.preco;
+                    } catch (err) {
                 alert(err.message);
             }
         }

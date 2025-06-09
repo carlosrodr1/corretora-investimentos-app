@@ -10,21 +10,25 @@
     <div class="overflow-x-auto shadow-xl rounded-2xl bg-white/10 backdrop-blur-md">
         <table class="min-w-full text-base text-white">
             <thead>
-                <tr class="border-b border-indigo-900">
-                    <th class="py-3 px-6 text-left font-semibold">Código</th>
-                    <th class="py-3 px-6 text-left font-semibold">Nome</th>
+                <tr class="border-b border-indigo-900 text-left">
+                    <th class="py-3 px-6 font-semibold">Código</th>
+                    <th class="py-3 px-6 font-semibold">Nome</th>
                     <th class="py-3 px-6 text-right font-semibold">Última Cotação</th>
-                    <th class="py-3 px-6 text-right font-semibold">Atualizado</th>
+                    <th class="py-3 px-6 text-center font-semibold">Atualizado</th>
                 </tr>
             </thead>
-            <tbody>
+            <tbody id="ativos-tbody">
                 @foreach (var ativo in Model)
                 {
                     <tr class="hover:bg-white/5 transition">
                         <td class="py-2 px-6 font-bold">@ativo.Codigo</td>
                         <td class="py-2 px-6">@ativo.Nome</td>
-                        <td class="py-2 px-6 text-right">@(ativo.UltimaCotacao.HasValue ? $"R$ {ativo.UltimaCotacao.Value.ToString("N2")}" : "-")</td>
-                        <td class="py-2 px-6 text-right">@ativo.DataUltimaCotacao?.ToString("dd/MM/yyyy HH:mm")</td>
+                        <td class="py-2 px-6 text-right">
+                            @(ativo.UltimaCotacao.HasValue ? $"R$ {ativo.UltimaCotacao.Value.ToString("N2")}" : "-")
+                        </td>
+                        <td class="py-2 px-6 text-center">
+                            @ativo.DataUltimaCotacao?.ToString("dd/MM/yyyy HH:mm")
+                        </td>
                     </tr>
                 }
                 @if (!Model.Any())
@@ -36,4 +40,44 @@
             </tbody>
         </table>
     </div>
+
+    <div id="paginacao" class="flex justify-center mt-6 gap-2"></div>
 </div>
+
+@section Scripts {
+<script>
+    const linhasPorPagina = 10;
+    const tbody = document.getElementById("ativos-tbody");
+    const todasAsLinhas = Array.from(tbody.querySelectorAll("tr"));
+    const totalPaginas = Math.ceil(todasAsLinhas.length / linhasPorPagina);
+    const paginacao = document.getElementById("paginacao");
+
+    function mostrarPagina(pagina) {
+        const inicio = (pagina - 1) * linhasPorPagina;
+        const fim = inicio + linhasPorPagina;
+
+        todasAsLinhas.forEach((linha, i) => {
+            linha.style.display = (i >= inicio && i < fim) ? "" : "none";
+        });
+
+        atualizarBotoes(pagina);
+    }
+
+    function atualizarBotoes(paginaAtual) {
+        paginacao.innerHTML = "";
+
+        for (let i = 1; i <= totalPaginas; i++) {
+            const btn = document.createElement("button");
+            btn.textContent = i;
+            btn.className = `px-4 py-2 rounded-xl text-sm font-medium ${
+                i === paginaAtual ? "bg-indigo-600 text-white" : "bg-white/10 text-indigo-200 hover:bg-white/20"
+            }`;
+            btn.onclick = () => mostrarPagina(i);
+            paginacao.appendChild(btn);
+        }
+    }
+
+    if (todasAsLinhas.length > 0)
+        mostrarPagina(1);
+</script>
+}

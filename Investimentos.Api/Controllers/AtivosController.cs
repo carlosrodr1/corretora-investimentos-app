@@ -1,4 +1,5 @@
 ﻿using Investimentos.Api.Repositories.Interfaces;
+using Investimentos.Api.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Investimentos.Api.Controllers
@@ -9,16 +10,35 @@ namespace Investimentos.Api.Controllers
     {
         private readonly IAtivoRepository _ativoRepository;
 
-        public AtivosController(IAtivoRepository ativoRepository)
+        private readonly ICotacaoRepository _cotacaoRepository;
+
+        public AtivosController(IAtivoRepository ativoRepository, ICotacaoRepository cotacaoRepository)
         {
             _ativoRepository = ativoRepository;
+            _cotacaoRepository = cotacaoRepository;
         }
 
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
             var ativos = await _ativoRepository.GetAllAsync();
-            return Ok(ativos);
+            var resultado = new List<AtivoViewModel>();
+
+            foreach (var ativo in ativos)
+            {
+                var cotacao = await _cotacaoRepository.GetUltimaCotacaoAsync(ativo.Id);
+
+                resultado.Add(new AtivoViewModel
+                {
+                    Id = ativo.Id,
+                    Codigo = ativo.Codigo,
+                    Nome = ativo.Nome,
+                    UltimaCotacao = cotacao?.PrecoUnitario,
+                    DataUltimaCotacao = cotacao?.DataHora
+                });
+            }
+
+            return Ok(resultado);
         }
 
         [HttpGet("buscar")]
