@@ -41,7 +41,8 @@ git clone https://github.com/carlosrodr1/corretora-investimentos-app.git
 cd corretora-investimentos-app
 
 # (Apenas no Windows) Corrige permissões do script
-# Este comando deve ser executado no terminal Git Bash (dentro da pasta do projeto)
+# Estes comandos devem ser executados no terminal Git Bash (dentro da pasta do projeto)
+dos2unix wait-for-it.sh
 chmod +x wait-for-it.sh
 
 # Sobe os containers
