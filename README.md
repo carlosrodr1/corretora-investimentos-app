@@ -32,16 +32,20 @@ Investimentos em renda variável não têm retorno previsível e dependem da osc
 
 ### Pré-requisitos
 - Docker + Docker Compose
+- Terminal Git Bash (Windows) ou shell compatível
 
 ### Comandos únicos para subir tudo:
 
 ```bash
 git clone https://github.com/carlosrodr1/corretora-investimentos-app.git
-
 cd corretora-investimentos-app
 
+# (Apenas no Windows) Corrige permissões do script
+chmod +x wait-for-it.sh
+
+# Sobe os containers
 docker-compose up --build
-```
+
 
 ### Serviços disponíveis:
 
