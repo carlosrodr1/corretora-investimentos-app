@@ -58,43 +58,45 @@ docker-compose up --build
 ```sql
 CREATE TABLE usuario (
   id INT AUTO_INCREMENT PRIMARY KEY,
-  nome VARCHAR(100),
-  email VARCHAR(100),
-  corretagem_percentual DECIMAL(5,2)
+  nome VARCHAR(100) NOT NULL,
+  email VARCHAR(150) NOT NULL,
+  senha_hash VARCHAR(255) NOT NULL,
+  corretagem_percentual DECIMAL(5,2) NOT NULL
 );
 
 CREATE TABLE ativo (
   id INT AUTO_INCREMENT PRIMARY KEY,
-  codigo VARCHAR(10),
-  nome VARCHAR(100)
+  codigo VARCHAR(10) NOT NULL,
+  nome VARCHAR(100) NOT NULL
 );
 
 CREATE TABLE operacao (
   id INT AUTO_INCREMENT PRIMARY KEY,
-  usuario_id INT,
-  ativo_id INT,
-  quantidade INT,
-  preco_unitario DECIMAL(10,2),
-  tipo_operacao ENUM('compra', 'venda'),
-  corretagem DECIMAL(10,2),
-  data_hora DATETIME
+  usuario_id INT NOT NULL,
+  ativo_id INT NOT NULL,
+  quantidade INT NOT NULL,
+  preco_unitario DECIMAL(15,4) NOT NULL,
+  tipo_operacao VARCHAR(10) NOT NULL,
+  corretagem DECIMAL(10,2) NOT NULL,
+  data_hora DATETIME NOT NULL
 );
 
 CREATE TABLE cotacao (
   id INT AUTO_INCREMENT PRIMARY KEY,
-  ativo_id INT,
-  preco_unitario DECIMAL(10,2),
-  data_hora DATETIME
+  ativo_id INT NOT NULL,
+  preco_unitario DECIMAL(15,4) NOT NULL,
+  data_hora DATETIME NOT NULL
 );
 
 CREATE TABLE posicao (
   id INT AUTO_INCREMENT PRIMARY KEY,
-  usuario_id INT,
-  ativo_id INT,
-  quantidade INT,
-  preco_medio DECIMAL(10,2),
-  pl DECIMAL(10,2)
+  usuario_id INT NOT NULL,
+  ativo_id INT NOT NULL,
+  quantidade INT NOT NULL,
+  preco_medio DECIMAL(15,4) NOT NULL,
+  pl DECIMAL(15,2) NOT NULL
 );
+
 ```
 
 ---
@@ -110,6 +112,7 @@ SELECT * FROM operacao
 WHERE usuario_id = @usuarioId
   AND ativo_id = @ativoId
   AND data_hora >= NOW() - INTERVAL 30 DAY;
+
 ```
 
 ---
