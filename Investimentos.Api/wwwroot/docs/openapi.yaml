@@ -1,0 +1,337 @@
+﻿openapi: 3.1.0
+info:
+  title: API - Corretora de Investimentos
+  version: "1.0"
+  description: API para controle de investimentos em renda variável com operações, posições, cotações e usuários.
+
+servers:
+  - url: http://localhost:5030
+    description: Servidor local de desenvolvimento
+
+paths:
+
+  /api/ativos:
+    get:
+      summary: Lista todos os ativos com última cotação
+      responses:
+        '200':
+          description: Lista de ativos
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/AtivoViewModel'
+
+  /api/ativos/buscar:
+    get:
+      summary: Busca ativos por prefixo
+      parameters:
+        - in: query
+          name: termo
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Lista de sugestões
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    codigo:
+                      type: string
+                    nome:
+                      type: string
+
+  /api/ativos/codigo/{codigo}:
+    get:
+      summary: Busca ativo pelo código
+      parameters:
+        - in: path
+          name: codigo
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Ativo encontrado
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id: { type: integer }
+                  codigo: { type: string }
+                  nome: { type: string }
+
+  /api/cotacoes/ultima/{ativoId}:
+    get:
+      summary: Última cotação de um ativo
+      parameters:
+        - in: path
+          name: ativoId
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Cotação encontrada
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  preco: { type: number }
+                  data: { type: string, format: date-time }
+
+  /api/investimentos/posicoes/{usuarioId}:
+    get:
+      summary: Posições do usuário por ativo
+      parameters:
+        - in: path
+          name: usuarioId
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Lista de posições
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { type: object }
+
+  /api/investimentos/total-investido/{usuarioId}:
+    get:
+      summary: Total investido do usuário
+      parameters:
+        - in: path
+          name: usuarioId
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Total investido
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  total_investido: { type: number }
+
+  /api/investimentos/pl/{usuarioId}:
+    get:
+      summary: P&L total (lucro/prejuízo)
+      parameters:
+        - in: path
+          name: usuarioId
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Valor P&L
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  lucro_prejuizo: { type: number }
+
+  /api/investimentos/top10-investimento:
+    get:
+      summary: Top 10 usuários por investimento
+      responses:
+        '200':
+          description: Lista dos top investidores
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { type: object }
+
+  /api/investimentos/top10-corretagem:
+    get:
+      summary: Top 10 usuários por corretagem paga
+      responses:
+        '200':
+          description: Lista dos top pagadores de corretagem
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { type: object }
+
+  /api/investimentos/preco-medio/{usuarioId}/{ativoId}:
+    get:
+      summary: Preço médio de aquisição do ativo por usuário
+      parameters:
+        - in: path
+          name: usuarioId
+          required: true
+          schema:
+            type: integer
+        - in: path
+          name: ativoId
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Preço médio calculado
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  preco_medio: { type: number }
+
+  /api/operacoes/por-usuario/{usuarioId}:
+    get:
+      summary: Lista operações de um usuário
+      parameters:
+        - in: path
+          name: usuarioId
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Lista de operações
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: '#/components/schemas/OperacaoViewModel' }
+
+  /api/operacoes:
+    post:
+      summary: Cria uma nova operação de compra ou venda
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OperacaoViewModel'
+      responses:
+        '201':
+          description: Operação criada com sucesso
+
+  /api/usuarios:
+    get:
+      summary: Lista todos os usuários
+      responses:
+        '200':
+          description: Lista de usuários
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { type: object }
+
+  /api/usuarios/registrar:
+    post:
+      summary: Registra um novo usuário
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CadastroViewModel'
+      responses:
+        '200':
+          description: Usuário registrado com sucesso
+
+  /api/usuarios/login:
+    post:
+      summary: Realiza login do usuário
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginViewModel'
+      responses:
+        '200':
+          description: Login bem-sucedido
+
+  /api/usuarios/{usuarioId}:
+    get:
+      summary: Retorna usuário por ID
+      parameters:
+        - in: path
+          name: usuarioId
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Dados do usuário
+
+  /api/usuarios/{usuarioId}/corretagem:
+    get:
+      summary: Total de corretagem do usuário
+      parameters:
+        - in: path
+          name: usuarioId
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Valor total pago em corretagem
+
+  /api/usuarios/detalhes/{usuarioId}:
+    get:
+      summary: Retorna dados completos do usuário
+      parameters:
+        - in: path
+          name: usuarioId
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Perfil completo do usuário
+
+components:
+  schemas:
+    AtivoViewModel:
+      type: object
+      properties:
+        id: { type: integer }
+        codigo: { type: string }
+        nome: { type: string }
+        ultimaCotacao: { type: number }
+        dataUltimaCotacao: { type: string, format: date-time }
+
+    OperacaoViewModel:
+      type: object
+      properties:
+        id: { type: integer }
+        usuarioId: { type: integer }
+        ativoCodigo: { type: string }
+        tipoOperacao: { type: string }
+        quantidade: { type: integer }
+        precoUnitario: { type: number }
+        corretagem: { type: number }
+        dataHora: { type: string, format: date-time }
+
+    CadastroViewModel:
+      type: object
+      properties:
+        nome: { type: string }
+        email: { type: string }
+        senha: { type: string }
+        corretagemPercentual: { type: number }
+
+    LoginViewModel:
+      type: object
+      properties:
+        email: { type: string }
+        senha: { type: string }

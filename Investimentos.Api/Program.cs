@@ -5,6 +5,7 @@ using Investimentos.Api.Services.Interfaces;
 using Investimentos.Api.Services;
 using Microsoft.EntityFrameworkCore;
 using Investimentos.Api.Repositories.Resiliente;
+using Microsoft.AspNetCore.StaticFiles;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -46,11 +47,19 @@ app.UseCors(policy =>
           .AllowAnyHeader()
           .AllowAnyMethod());
 
-app.UseSwagger();
+
+var contentTypeProvider = new FileExtensionContentTypeProvider();
+contentTypeProvider.Mappings[".yaml"] = "application/yaml";
+
+app.UseStaticFiles(new StaticFileOptions
+{
+    ContentTypeProvider = contentTypeProvider
+});
+
 app.UseSwaggerUI(c =>
 {
-    c.SwaggerEndpoint("/swagger/v1/swagger.json", "Investimentos API V1");
-    c.RoutePrefix = string.Empty;
+    c.SwaggerEndpoint("/docs/openapi.yaml", "Investimentos API - OpenAPI YAML");
+    c.RoutePrefix = "swagger";
 });
 
 //app.UseHttpsRedirection();
