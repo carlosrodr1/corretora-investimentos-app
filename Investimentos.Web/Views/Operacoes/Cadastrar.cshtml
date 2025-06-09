@@ -1,0 +1,103 @@
+﻿@model Investimentos.Web.ViewModel.OperacaoViewModel
+@{
+    ViewData["Title"] = "Cadastrar Operação";
+}
+
+<h2 class="text-2xl font-bold mb-4 text-white">Nova Operação</h2>
+
+<form asp-action="Cadastrar" method="post" class="space-y-4 bg-white/10 backdrop-blur-md p-6 rounded-2xl shadow-xl max-w-xl mx-auto text-white">
+
+    <label class="block">
+        Código do Ativo:
+        <input id="ativoInput" name="AtivoCodigo" required class="w-full text-black rounded p-2" placeholder="Digite o nome do ativo (ex: ITA...)" autocomplete="off" />
+        <input type="hidden" id="ativoId" name="AtivoId" />
+        <ul id="sugestoes" class="bg-white text-black rounded shadow mt-1 hidden"></ul>
+    </label>
+
+    <label class="block">
+        Tipo de Operação:
+        <select name="TipoOperacao" class="w-full text-black rounded p-2" required>
+            <option value="compra">Compra</option>
+            <option value="venda">Venda</option>
+        </select>
+    </label>
+
+    <label class="block">
+        Quantidade:
+        <input name="Quantidade" type="number" required class="w-full text-black rounded p-2" />
+    </label>
+
+    <label class="block">
+        Preço Unitário:
+        <div class="flex space-x-2">
+            <input name="PrecoUnitario" id="precoUnitario" type="number" step="0.01" class="w-full text-black rounded p-2" required />
+            <button type="button" onclick="buscarUltimaCotacao()" class="bg-blue-600 text-white rounded px-4">Buscar</button>
+        </div>
+    </label>
+
+
+    <div class="flex justify-between pt-4">
+        <button type="submit" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded">
+            Salvar
+        </button>
+        <a href="/Operacoes/Index" class="bg-slate-600 hover:bg-slate-700 text-white font-bold py-2 px-4 rounded transition">
+            Voltar
+        </a>
+    </div>
+</form>
+
+@section Scripts {
+    <script>
+        const input = document.getElementById("ativoInput");
+        const sugestoes = document.getElementById("sugestoes");
+
+        input.addEventListener("input", async () => {
+            const termo = input.value.trim();
+            if (!termo) {
+                sugestoes.classList.add("hidden");
+                sugestoes.innerHTML = "";
+                return;
+            }
+
+            const response = await fetch(`/Operacoes/BuscarAtivos?termo=${encodeURIComponent(termo)}`);
+            const dados = await response.json();
+
+            sugestoes.innerHTML = dados.map(a =>
+                `<li class="px-2 py-1 hover:bg-gray-200 cursor-pointer" data-id="${a.id}" data-codigo="${a.codigo}">${a.codigo} - ${a.nome}</li>`
+            ).join("");
+
+            sugestoes.classList.remove("hidden");
+
+            sugestoes.querySelectorAll("li").forEach(li =>
+                li.addEventListener("click", () => {
+                    input.value = li.dataset.codigo;
+                    document.getElementById("ativoId").value = li.dataset.id;
+                    sugestoes.classList.add("hidden");
+                })
+            );
+        });
+    </script>
+
+    <script>
+        async function buscarUltimaCotacao() {
+            const ativoId = document.getElementById("ativoId").value;
+            if (!ativoId) {
+                alert("Selecione um ativo primeiro.");
+                return;
+            }
+
+            try {
+                const resp = await fetch(`/api/cotacoes/ultima/${ativoId}`);
+                if (!resp.ok) throw new Error("Cotação não encontrada.");
+
+                const cotacao = await resp.json();
+                document.getElementById("precoUnitario").value = cotacao.preco;
+            } catch (err) {
+                alert(err.message);
+            }
+        }
+    </script>
+
+
+}
+

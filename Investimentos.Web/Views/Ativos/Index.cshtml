@@ -1,0 +1,39 @@
+﻿@model List<Investimentos.Web.ViewModel.AtivoViewModel>
+
+@{
+    ViewData["Title"] = "Ativos";
+}
+
+<div class="max-w-4xl mx-auto pt-8">
+    <h2 class="text-3xl font-extrabold text-white mb-6 text-center">Ativos</h2>
+
+    <div class="overflow-x-auto shadow-xl rounded-2xl bg-white/10 backdrop-blur-md">
+        <table class="min-w-full text-base text-white">
+            <thead>
+                <tr class="border-b border-indigo-900">
+                    <th class="py-3 px-6 text-left font-semibold">Código</th>
+                    <th class="py-3 px-6 text-left font-semibold">Nome</th>
+                    <th class="py-3 px-6 text-right font-semibold">Última Cotação</th>
+                    <th class="py-3 px-6 text-right font-semibold">Atualizado</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var ativo in Model)
+                {
+                    <tr class="hover:bg-white/5 transition">
+                        <td class="py-2 px-6 font-bold">@ativo.Codigo</td>
+                        <td class="py-2 px-6">@ativo.Nome</td>
+                        <td class="py-2 px-6 text-right">@(ativo.UltimaCotacao.HasValue ? $"R$ {ativo.UltimaCotacao.Value.ToString("N2")}" : "-")</td>
+                        <td class="py-2 px-6 text-right">@ativo.DataUltimaCotacao?.ToString("dd/MM/yyyy HH:mm")</td>
+                    </tr>
+                }
+                @if (!Model.Any())
+                {
+                    <tr>
+                        <td colspan="4" class="py-8 text-center text-slate-300">Nenhum ativo cadastrado.</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

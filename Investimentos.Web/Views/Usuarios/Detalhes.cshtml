@@ -1,0 +1,92 @@
+﻿@model Investimentos.Web.ViewModel.UsuarioDetalheViewModel
+
+<div class="max-w-5xl mx-auto py-10">
+    <a href="@Url.Action("Index", "Usuarios")" class="inline-block mb-6 text-indigo-400 hover:underline">&larr; Voltar para Usuários</a>
+
+    <!-- Card principal -->
+    <div class="bg-white/10 backdrop-blur-lg rounded-2xl p-8 shadow-xl mb-8">
+        <h2 class="text-2xl md:text-3xl font-extrabold text-white mb-2">@Model.Nome</h2>
+        <p class="text-slate-200 mb-1"><span class="font-semibold">Email:</span> @Model.Email</p>
+        <p class="text-slate-200 mb-1"><span class="font-semibold">Corretagem:</span> @Model.CorretagemPercentual.ToString("N2")%</p>
+        <div class="flex flex-col md:flex-row gap-6 mt-4">
+            <div class="flex-1 bg-white/5 rounded-xl p-4 text-center">
+                <span class="text-indigo-200 text-lg">Total Investido</span>
+                <div class="text-2xl font-bold text-cyan-300">R$ @Model.TotalInvestido.ToString("N2")</div>
+            </div>
+            <div class="flex-1 bg-white/5 rounded-xl p-4 text-center">
+                <span class="text-indigo-200 text-lg">Total Corretagem</span>
+                <div class="text-2xl font-bold text-purple-300">R$ @Model.TotalCorretagem.ToString("N2")</div>
+            </div>
+            <div class="flex-1 bg-white/5 rounded-xl p-4 text-center">
+                <span class="text-indigo-200 text-lg">Lucro/Prejuízo</span>
+                <div class="text-2xl font-bold @(Model.PL >= 0 ? "text-green-400" : "text-red-400")">R$ @Model.PL.ToString("N2")</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Posições -->
+    <div class="bg-white/10 backdrop-blur-lg rounded-2xl p-6 shadow-lg mb-8">
+        <h3 class="text-xl font-bold text-white mb-3">Posições</h3>
+        <table class="min-w-full text-base text-white">
+            <thead>
+                <tr class="border-b border-indigo-900">
+                    <th class="py-2 px-4 text-left">Ativo</th>
+                    <th class="py-2 px-4 text-right">Qtd</th>
+                    <th class="py-2 px-4 text-right">Preço Médio</th>
+                    <th class="py-2 px-4 text-right">P&L</th>
+                    <th class="py-2 px-4 text-right">Última Cotação</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var p in Model.Posicoes)
+                {
+                    <tr class="hover:bg-white/5 transition">
+                        <td class="py-2 px-4">@p.AtivoCodigo - @p.AtivoNome</td>
+                        <td class="py-2 px-4 text-right">@p.Quantidade</td>
+                        <td class="py-2 px-4 text-right">R$ @p.PrecoMedio.ToString("N2")</td>
+                        <td class="py-2 px-4 text-right @(p.PL >= 0 ? "text-green-400" : "text-red-400")">R$ @p.PL.ToString("N2")</td>
+                        <td class="py-2 px-4 text-right">@((p.UltimaCotacao.HasValue) ? $"R$ {p.UltimaCotacao.Value.ToString("N2")}" : "-")</td>
+                    </tr>
+                }
+                @if (!Model.Posicoes.Any())
+                {
+                    <tr><td colspan="5" class="py-4 text-center text-slate-300">Nenhuma posição encontrada.</td></tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Operações -->
+    <div class="bg-white/10 backdrop-blur-lg rounded-2xl p-6 shadow-lg">
+        <h3 class="text-xl font-bold text-white mb-3">Operações recentes</h3>
+        <table class="min-w-full text-base text-white">
+            <thead>
+                <tr class="border-b border-indigo-900">
+                    <th class="py-2 px-4 text-left">Ativo</th>
+                    <th class="py-2 px-4 text-left">Tipo</th>
+                    <th class="py-2 px-4 text-right">Qtd</th>
+                    <th class="py-2 px-4 text-right">Preço</th>
+                    <th class="py-2 px-4 text-right">Corretagem</th>
+                    <th class="py-2 px-4 text-right">Data</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var o in Model.Operacoes)
+                {
+                    <tr class="hover:bg-white/5 transition">
+                        <td class="py-2 px-4">@o.AtivoCodigo</td>
+                        <td class="py-2 px-4">@o.TipoOperacao</td>
+                        <td class="py-2 px-4 text-right">@o.Quantidade</td>
+                        <td class="py-2 px-4 text-right">R$ @o.PrecoUnitario.ToString("N2")</td>
+                        <td class="py-2 px-4 text-right">R$ @o.Corretagem.ToString("N2")</td>
+                        <td class="py-2 px-4 text-right">@o.DataHora.ToString("dd/MM/yyyy")</td>
+                    </tr>
+                }
+                @if (!Model.Operacoes.Any())
+                {
+                    <tr><td colspan="6" class="py-4 text-center text-slate-300">Nenhuma operação encontrada.</td></tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

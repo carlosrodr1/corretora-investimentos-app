@@ -1,0 +1,45 @@
+﻿@model List<Investimentos.Web.ViewModel.UsuarioViewModel>
+
+@{
+    ViewData["Title"] = "Usuários";
+}
+
+<div class="max-w-4xl mx-auto pt-8">
+    <h2 class="text-3xl font-extrabold text-white mb-6 text-center">Usuários</h2>
+
+    <div class="overflow-x-auto shadow-xl rounded-2xl bg-white/10 backdrop-blur-md">
+        <table class="min-w-full text-base text-white">
+            <thead>
+                <tr class="border-b border-indigo-900">
+                    <th class="py-3 px-6 text-left font-semibold">ID</th>
+                    <th class="py-3 px-6 text-left font-semibold">Nome</th>
+                    <th class="py-3 px-6 text-left font-semibold">Email</th>
+                    <th class="py-3 px-6 text-right font-semibold">% Corretagem</th>
+                    <th class="py-3 px-6"></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var user in Model)
+                {
+                    <tr class="hover:bg-white/5 transition">
+                        <td class="py-2 px-6">@user.Id</td>
+                        <td class="py-2 px-6">@user.Nome</td>
+                        <td class="py-2 px-6">@user.Email</td>
+                        <td class="py-2 px-6 text-right">@user.CorretagemPercentual.ToString("N2")%</td>
+                        <td class="py-2 px-6 text-right">
+                            <a href="@Url.Action("Detalhes", "Usuarios", new { id = user.Id })" class="text-indigo-400 hover:underline hover:text-indigo-200 transition font-bold">
+                                Ver Detalhes &rarr;
+                            </a>
+                        </td>
+                    </tr>
+                }
+                @if (!Model.Any())
+                {
+                    <tr>
+                        <td colspan="5" class="py-8 text-center text-slate-300">Nenhum usuário cadastrado.</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

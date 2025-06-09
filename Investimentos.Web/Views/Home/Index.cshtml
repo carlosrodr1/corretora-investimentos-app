@@ -1,0 +1,94 @@
+﻿@model Investimentos.Web.ViewModel.DashboardViewModel
+
+@{
+    ViewData["Title"] = "Dashboard";
+}
+
+<div class="min-h-screen bg-gradient-to-br from-indigo-950 to-slate-900 py-10 px-4">
+    <h1 class="text-4xl md:text-5xl font-extrabold text-white mb-10 text-center drop-shadow-lg tracking-tight">Dashboard do Investidor</h1>
+
+    <!-- Métricas -->
+    <div class="flex flex-col md:flex-row gap-6 justify-center items-stretch mb-10">
+        <div class="flex-1 bg-white/10 rounded-2xl shadow-xl backdrop-blur-md p-6 flex flex-col items-center hover:scale-105 transition">
+            <span class="text-lg font-semibold text-indigo-300">Total Investido</span>
+            <span class="text-3xl md:text-4xl font-bold bg-gradient-to-r from-cyan-400 to-violet-400 bg-clip-text text-transparent mt-2 mb-1">R$ @Model.TotalInvestido.ToString("N2")</span>
+        </div>
+        <div class="flex-1 bg-white/10 rounded-2xl shadow-xl backdrop-blur-md p-6 flex flex-col items-center hover:scale-105 transition">
+            <span class="text-lg font-semibold text-indigo-300">Lucro / Prejuízo</span>
+            <span class="text-3xl md:text-4xl font-bold @(Model.LucroPrejuizo >= 0 ? "text-green-400" : "text-red-400") mt-2 mb-1">R$ @Model.LucroPrejuizo.ToString("N2")</span>
+        </div>
+        <div class="flex-1 bg-white/10 rounded-2xl shadow-xl backdrop-blur-md p-6 flex flex-col items-center hover:scale-105 transition">
+            <span class="text-lg font-semibold text-indigo-300">Total Corretagem</span>
+            <span class="text-3xl md:text-4xl font-bold bg-gradient-to-r from-pink-300 to-purple-400 bg-clip-text text-transparent mt-2 mb-1">R$ @Model.TotalCorretagem.ToString("N2")</span>
+        </div>
+    </div>
+
+    <!-- Rankings -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-6xl mx-auto">
+        <div class="bg-white/10 rounded-2xl shadow-xl backdrop-blur-md p-6">
+            <h2 class="text-xl font-bold text-white mb-4 tracking-wide">Top 10 por Investimento</h2>
+            <table class="min-w-full text-slate-100 text-base">
+                <thead>
+                    <tr class="border-b border-slate-800">
+                        <th class="py-2 text-left">Usuário</th>
+                        <th class="py-2 text-right">Valor Investido</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var u in Model.Top10Investimento)
+                    {
+                        <tr class="hover:bg-white/5 transition">
+                            <td class="py-2">@u.Nome</td>
+                            <td class="py-2 text-right">R$ @u.Valor.ToString("N2")</td>
+                        </tr>
+                    }
+                    @if (!Model.Top10Investimento.Any())
+                    {
+                        <tr>
+                            <td colspan="2" class="py-4 text-center text-slate-400">Nenhum dado disponível</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+        <div class="bg-white/10 rounded-2xl shadow-xl backdrop-blur-md p-6">
+            <h2 class="text-xl font-bold text-white mb-4 tracking-wide">Top 10 por Corretagem</h2>
+            <table class="min-w-full text-slate-100 text-base">
+                <thead>
+                    <tr class="border-b border-slate-800">
+                        <th class="py-2 text-left">Usuário</th>
+                        <th class="py-2 text-right">Total Corretagem</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var u in Model.Top10Corretagem)
+                    {
+                        <tr class="hover:bg-white/5 transition">
+                            <td class="py-2">@u.Nome</td>
+                            <td class="py-2 text-right">R$ @u.Valor.ToString("N2")</td>
+                        </tr>
+                    }
+                    @if (!Model.Top10Corretagem.Any())
+                    {
+                        <tr>
+                            <td colspan="2" class="py-4 text-center text-slate-400">Nenhum dado disponível</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="mt-6 flex flex-col sm:flex-row justify-center gap-4 text-center">
+        <a href="/Operacoes/Index" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 px-6 rounded-lg transition duration-300">
+            Ver Minhas Operações →
+        </a>
+        <a href="/Ativos/Index" class="bg-cyan-600 hover:bg-cyan-700 text-white font-bold py-3 px-6 rounded-lg transition duration-300">
+            Ver Ativos
+        </a>
+        <a href="/Usuarios/Index" class="bg-amber-600 hover:bg-amber-700 text-white font-bold py-3 px-6 rounded-lg transition duration-300">
+            Ver Usuários
+        </a>
+    </div>
+
+
+</div>
